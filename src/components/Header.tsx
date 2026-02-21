@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Activity, BarChart3, GitCompare, Trophy, Settings, Zap } from 'lucide-react'
+import { BarChart3, GitCompare, Trophy, Settings, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -24,9 +25,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)' }}>
-              <Activity className="w-5 h-5 text-white" />
-            </div>
+            <Image src="/logo.png" alt="5Cast" width={36} height={36} className="rounded-lg" />
             <div className="hidden sm:block">
               <span className="text-lg font-bold gradient-text">5Cast</span>
               <span className="text-xs block" style={{ color: 'var(--text-muted)', marginTop: -2 }}>5-Agent Prediction Forecaster</span>

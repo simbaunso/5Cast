@@ -16,6 +16,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "5Cast — 5-Agent Prediction Forecaster",
   description: "Multi-agent macro event forecasting with real-time data from Polymarket, Kalshi, and Opinion. Research-grade analytical tool for policymakers and researchers.",
+  icons: {
+    icon: [
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
