@@ -6,8 +6,9 @@ import { getSettings, saveSettings } from '@/lib/storage'
 import { Settings, Key, Brain, CheckCircle2, Server } from 'lucide-react'
 
 const LLM_PROVIDERS = [
-  { value: 'none', label: 'Rule-based (No API key needed)', description: 'Uses deterministic rules with market data. Fast and free.' },
-  { value: 'grok', label: 'Grok (xAI)', description: 'Recommended. Uses Grok API for agent reasoning.' },
+  { value: 'server-grok', label: 'Grok AI (Built-in)', description: 'AI-powered analysis via Grok. No API key needed. Limited to 3 uses/day.' },
+  { value: 'none', label: 'Rule-based (No AI)', description: 'Uses deterministic rules with market data. Fast and unlimited.' },
+  { value: 'grok', label: 'Grok (Your own key)', description: 'Use your own Grok API key for unlimited access.' },
   { value: 'openai', label: 'OpenAI', description: 'GPT-4o-mini or other OpenAI models.' },
   { value: 'openrouter', label: 'OpenRouter', description: 'Access DeepSeek, Llama, and other models.' },
 ]
@@ -93,7 +94,7 @@ export default function SettingsPage() {
           ))}
         </div>
 
-        {settings.llmProvider !== 'none' && (
+        {settings.llmProvider !== 'none' && settings.llmProvider !== 'server-grok' && (
           <>
             <div>
               <label className="text-xs font-medium block mb-1.5" style={{ color: 'var(--text-secondary)' }}>

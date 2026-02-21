@@ -193,25 +193,47 @@ Respond in this exact JSON format:
   "rationale": "One sentence final assessment"
 }`
 
-  try {
-    const { endpoint, headers, model } = getLLMConfig(settings)
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        temperature: 0.7,
-        max_tokens: 500,
-      }),
-    })
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt },
+  ]
 
-    if (!res.ok) throw new Error(`LLM API error: ${res.status}`)
-    const data = await res.json()
-    const content = data.choices?.[0]?.message?.content || ''
+  try {
+    let content: string
+
+    if (settings.llmProvider === 'server-grok') {
+      // Use server-side proxy (API key stays on server)
+      const res = await fetch('/api/llm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, temperature: 0.7, max_tokens: 500 }),
+      })
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || `Server AI error: ${res.status}`)
+      }
+
+      const data = await res.json()
+      content = data.choices?.[0]?.message?.content || ''
+    } else {
+      // Direct API call (user-provided keys)
+      const { endpoint, headers, model } = getLLMConfig(settings)
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature: 0.7,
+          max_tokens: 500,
+        }),
+      })
+
+      if (!res.ok) throw new Error(`LLM API error: ${res.status}`)
+      const data = await res.json()
+      content = data.choices?.[0]?.message?.content || ''
+    }
 
     // Parse JSON from response
     const jsonMatch = content.match(/\{[\s\S]*\}/)
@@ -325,7 +347,8 @@ export async function runSimulation(
   }
 
   // Run all agents
-  const useLLM = settings.llmProvider !== 'none' && settings.llmApiKey
+  // server-grok doesn't need an API key (key is on server)
+  const useLLM = settings.llmProvider === 'server-grok' || (settings.llmProvider !== 'none' && settings.llmApiKey)
   const agentPromises = AGENTS.map(agent =>
     useLLM
       ? generateLLMVote(agent.role, question, marketComparison, settings)

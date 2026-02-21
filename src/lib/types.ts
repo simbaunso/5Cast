@@ -106,14 +106,14 @@ export interface LeaderboardEntry {
 
 // Settings
 export interface AppSettings {
-  llmProvider: 'grok' | 'openai' | 'openrouter' | 'none'
+  llmProvider: 'server-grok' | 'grok' | 'openai' | 'openrouter' | 'none'
   llmApiKey: string
   llmModel: string
   opinionApiKey: string
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  llmProvider: 'none',
+  llmProvider: 'server-grok',
   llmApiKey: '',
   llmModel: '',
   opinionApiKey: '',
