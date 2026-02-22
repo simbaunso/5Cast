@@ -1,11 +1,15 @@
 import { Market, Outcome } from '../types'
 
-const API = '/api/kalshi'
+const CORS_PROXY = 'https://corsproxy.io/?'
+const KALSHI_API = 'https://api.elections.kalshi.com/trade-api/v2'
 
 export async function fetchKalshiMarkets(limit = 20, cursor?: string): Promise<{ markets: Market[]; cursor?: string }> {
-  let url = `${API}?endpoint=events&status=open&limit=${limit}&with_nested_markets=true`
-  if (cursor) url += `&cursor=${cursor}`
+  const params = new URLSearchParams({
+    status: 'open', limit: String(limit), with_nested_markets: 'true',
+  })
+  if (cursor) params.set('cursor', cursor)
 
+  const url = `${CORS_PROXY}${encodeURIComponent(`${KALSHI_API}/events?${params}`)}`
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Kalshi API error: ${res.status}`)
   const data = await res.json()

@@ -1,11 +1,13 @@
 import { Market, Outcome } from '../types'
 
-const API = '/api/polymarket'
+const GAMMA_API = 'https://gamma-api.polymarket.com'
 
 export async function fetchPolymarketMarkets(limit = 20, offset = 0): Promise<Market[]> {
-  const res = await fetch(
-    `${API}?endpoint=events&active=true&closed=false&limit=${limit}&offset=${offset}&order=volume24hr&ascending=false`
-  )
+  const params = new URLSearchParams({
+    active: 'true', closed: 'false', limit: String(limit),
+    offset: String(offset), order: 'volume24hr', ascending: 'false',
+  })
+  const res = await fetch(`${GAMMA_API}/events?${params}`)
   if (!res.ok) throw new Error(`Polymarket API error: ${res.status}`)
   const events = await res.json()
   if (!Array.isArray(events)) return []

@@ -31,11 +31,6 @@ export default function SimulationPanel() {
       setAllMarkets(all)
     }).finally(() => setLoadingMarkets(false))
 
-    // Check remaining AI calls
-    fetch('/api/llm')
-      .then(r => r.json())
-      .then(d => setAiRemaining(d.remaining))
-      .catch(() => {})
   }, [])
 
   const handleRun = async () => {
@@ -82,10 +77,6 @@ export default function SimulationPanel() {
       setResult(sim)
       saveSimulation(sim)
 
-      // Refresh remaining AI calls count
-      if (settings.llmProvider === 'server-grok') {
-        fetch('/api/llm').then(r => r.json()).then(d => setAiRemaining(d.remaining)).catch(() => {})
-      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Simulation failed')
     } finally {
@@ -157,16 +148,7 @@ export default function SimulationPanel() {
           </button>
         </div>
         <div className="flex items-center gap-2 mt-2 flex-wrap">
-          {settings.llmProvider === 'server-grok' ? (
-            <span className="text-xs px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: 'rgba(59,130,246,0.1)', color: '#93C5FD' }}>
-              <Brain className="w-3 h-3" /> AI-Powered (Grok)
-              {aiRemaining !== null && (
-                <span style={{ color: aiRemaining > 0 ? '#6EE7B7' : '#FCA5A5' }}>
-                  &middot; {aiRemaining}/3 left today
-                </span>
-              )}
-            </span>
-          ) : settings.llmProvider === 'none' ? (
+          {settings.llmProvider === 'none' ? (
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Mode: Rule-based (fast)</span>
           ) : (
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Mode: LLM ({settings.llmProvider})</span>
