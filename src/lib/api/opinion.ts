@@ -1,7 +1,5 @@
 import { Market } from '../types'
 
-const CORS_PROXY = 'https://corsproxy.io/?'
-const OPINION_PUBLIC = 'https://proxy.opinion.trade:8443/api/bsc/api/v2'
 
 interface OpinionRelease {
   id: number
@@ -48,7 +46,7 @@ export async function fetchOpinionMarkets(limit = 20): Promise<Market[]> {
       chainId: '56',
     })
 
-    const res = await fetch(`${CORS_PROXY}${encodeURIComponent(`${OPINION_PUBLIC}/indicator?${params}`)}`)
+    const res = await fetch(`/proxy/opinion/indicator?${params}`)
     if (!res.ok) throw new Error(`Opinion API error: ${res.status}`)
     const data = await res.json()
     if (data.errno !== 0) throw new Error(data.errmsg || 'Opinion API error')
@@ -63,7 +61,7 @@ export async function fetchOpinionMarkets(limit = 20): Promise<Market[]> {
         page: '2',
         chainId: '56',
       })
-      const res2 = await fetch(`${CORS_PROXY}${encodeURIComponent(`${OPINION_PUBLIC}/indicator?${params2}`)}`)
+      const res2 = await fetch(`/proxy/opinion/indicator?${params2}`)
       if (res2.ok) {
         const data2 = await res2.json()
         moreIndicators = data2.result?.list || []
@@ -91,7 +89,7 @@ export async function fetchOpinionMarkets(limit = 20): Promise<Market[]> {
 // Also try fetching from topic endpoint for more markets
 export async function fetchOpinionTopics(limit = 20): Promise<Market[]> {
   try {
-    const res = await fetch(`${CORS_PROXY}${encodeURIComponent(`${OPINION_PUBLIC}/topic?per_page=${limit}&page=1`)}`)
+    const res = await fetch(`/proxy/opinion/topic?per_page=${limit}&page=1`)
     if (!res.ok) return []
     const data = await res.json()
     if (data.errno !== 0) return []
