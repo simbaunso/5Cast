@@ -1,10 +1,11 @@
 import { Platform } from './types'
+import { POLYMARKET_COLLATERAL_ASSET } from './api/polymarket-config'
 
 export function formatVolume(vol: number): string {
-  if (vol >= 1e9) return `$${(vol / 1e9).toFixed(1)}B`
-  if (vol >= 1e6) return `$${(vol / 1e6).toFixed(1)}M`
-  if (vol >= 1e3) return `$${(vol / 1e3).toFixed(1)}K`
-  return `$${vol.toFixed(0)}`
+  if (vol >= 1e9) return `${(vol / 1e9).toFixed(1)}B ${POLYMARKET_COLLATERAL_ASSET}`
+  if (vol >= 1e6) return `${(vol / 1e6).toFixed(1)}M ${POLYMARKET_COLLATERAL_ASSET}`
+  if (vol >= 1e3) return `${(vol / 1e3).toFixed(1)}K ${POLYMARKET_COLLATERAL_ASSET}`
+  return `${vol.toFixed(0)} ${POLYMARKET_COLLATERAL_ASSET}`
 }
 
 export function formatPrice(price: number): string {

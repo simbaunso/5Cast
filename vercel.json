@@ -1,5 +1,8 @@
 {
   "rewrites": [
+    { "source": "/proxy/poly/gamma/:path*", "destination": "https://gamma-api.polymarket.com/:path*" },
+    { "source": "/proxy/poly/data/:path*", "destination": "https://data-api.polymarket.com/:path*" },
+    { "source": "/proxy/poly/clob/:path*", "destination": "https://clob.polymarket.com/:path*" },
     { "source": "/proxy/poly/:path*", "destination": "https://gamma-api.polymarket.com/:path*" },
     { "source": "/proxy/kalshi/:path*", "destination": "https://api.elections.kalshi.com/trade-api/v2/:path*" },
     { "source": "/proxy/opinion/:path*", "destination": "https://proxy.opinion.trade:8443/api/bsc/api/v2/:path*" }

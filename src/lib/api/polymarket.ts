@@ -1,13 +1,12 @@
 import { Market, Outcome } from '../types'
+import { POLYMARKET_COLLATERAL_ASSET, fetchPolymarketReadEndpoint } from './polymarket-config'
 
 export async function fetchPolymarketMarkets(limit = 20, offset = 0): Promise<Market[]> {
   const params = new URLSearchParams({
     active: 'true', closed: 'false', limit: String(limit),
     offset: String(offset), order: 'volume24hr', ascending: 'false',
   })
-  const res = await fetch(`/proxy/poly/events?${params}`)
-  if (!res.ok) throw new Error(`Polymarket API error: ${res.status}`)
-  const events = await res.json()
+  const events = await fetchPolymarketReadEndpoint<unknown>('events', params)
   if (!Array.isArray(events)) return []
 
   const markets: Market[] = []
@@ -58,6 +57,7 @@ export async function fetchPolymarketMarkets(limit = 20, offset = 0): Promise<Ma
       volume: event.volume || 0,
       volume24h: event.volume24hr || 0,
       liquidity: event.liquidity || 0,
+      collateralAsset: POLYMARKET_COLLATERAL_ASSET,
       status: 'active',
       createdAt: event.startDate,
       endDate: event.endDate,

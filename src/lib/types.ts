@@ -1,4 +1,5 @@
 export type Platform = 'polymarket' | 'kalshi' | 'opinion'
+export type CollateralAsset = 'pUSD'
 
 export interface Outcome {
   label: string
@@ -18,6 +19,7 @@ export interface Market {
   volume: number
   volume24h?: number
   liquidity?: number
+  collateralAsset?: CollateralAsset
   status: 'active' | 'closed' | 'resolved'
   createdAt?: string
   endDate?: string

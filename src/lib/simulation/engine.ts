@@ -2,6 +2,7 @@ import {
   AgentRole, AgentVote, AgentStep, SimulationResult,
   MarketComparison, MomentsAnalysis, Market, AppSettings
 } from '../types'
+import { formatVolume } from '../utils'
 
 // Agent definitions
 const AGENTS: { role: AgentRole; name: string; avatar: string; bias: string }[] = [
@@ -156,7 +157,7 @@ function generateRuleBasedVote(
     finalProbability: finalProb,
     confidence: 0.6 + Math.random() * 0.3,
     rationale: steps[steps.length - 1].conclusion,
-    citations: marketData.map(m => `${m.platform}: ${(m.probability * 100).toFixed(0)}% (Vol: $${formatVol(m.volume)})`),
+    citations: marketData.map(m => `${m.platform}: ${(m.probability * 100).toFixed(0)}% (Vol: ${formatVolume(m.volume)})`),
   }
 }
 
@@ -172,7 +173,7 @@ async function generateLLMVote(
   const systemPrompt = `You are ${agent.name}, a ${agent.bias}. You are part of a multi-agent forecasting system analyzing macro events. Use Chain-of-Draft reasoning: each step must be ≤30 words. Provide exactly 3 reasoning steps.`
 
   const marketContext = marketData.map(m =>
-    `${m.platform}: ${(m.probability * 100).toFixed(1)}% probability, volume $${formatVol(m.volume)}`
+    `${m.platform}: ${(m.probability * 100).toFixed(1)}% probability, volume ${formatVolume(m.volume)}`
   ).join('\n')
 
   const userPrompt = `Question: "${question}"
@@ -199,8 +200,6 @@ Respond in this exact JSON format:
   ]
 
   try {
-    let content: string
-
     // Direct API call (user-provided keys)
     const { endpoint, headers, model } = getLLMConfig(settings)
     const res = await fetch(endpoint, {
@@ -216,7 +215,7 @@ Respond in this exact JSON format:
 
     if (!res.ok) throw new Error(`LLM API error: ${res.status}`)
     const data = await res.json()
-    content = data.choices?.[0]?.message?.content || ''
+    const content = data.choices?.[0]?.message?.content || ''
 
     // Parse JSON from response
     const jsonMatch = content.match(/\{[\s\S]*\}/)
@@ -285,12 +284,6 @@ function calculateMoments(marketData: MarketComparison[]): MomentsAnalysis {
     kurtosis,
     platforms: marketData.map(m => ({ platform: m.platform, prob: m.probability })),
   }
-}
-
-function formatVol(vol: number): string {
-  if (vol >= 1e6) return `${(vol / 1e6).toFixed(1)}M`
-  if (vol >= 1e3) return `${(vol / 1e3).toFixed(1)}K`
-  return vol.toFixed(0)
 }
 
 // Main simulation runner

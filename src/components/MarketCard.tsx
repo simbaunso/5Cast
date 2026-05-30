@@ -2,7 +2,7 @@
 
 import { Market } from '@/lib/types'
 import { formatVolume, formatPrice, timeUntil, platformBgClass } from '@/lib/utils'
-import { ExternalLink, Clock, TrendingUp, DollarSign } from 'lucide-react'
+import { ExternalLink, Clock, TrendingUp, Coins } from 'lucide-react'
 
 interface MarketCardProps {
   market: Market
@@ -94,7 +94,7 @@ export default function MarketCard({ market, compact, onSelect }: MarketCardProp
       <div className="flex items-center justify-between pt-2 border-t border-[var(--glass-border)]">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
-            <DollarSign className="w-3 h-3" />
+            <Coins className="w-3 h-3" />
             {formatVolume(market.volume)}
           </span>
           {market.liquidity ? (

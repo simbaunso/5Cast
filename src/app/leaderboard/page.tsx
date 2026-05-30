@@ -11,6 +11,7 @@ export default function LeaderboardPage() {
   const [simulations, setSimulations] = useState<SimulationResult[]>([])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSimulations(getSavedSimulations())
   }, [])
 
